@@ -1,23 +1,61 @@
 package T9;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int countOfNumbers = scanner.nextInt();
-
-        int[] numbers = new int[countOfNumbers];
+        int countOfNumbers = Integer.parseInt(scanner.nextLine());
+        int[] tokens = new int[countOfNumbers];
         for (int i = 0; i < countOfNumbers; i++) {
-            int number = scanner.nextInt();
-            numbers[i] = number;
+            tokens[i] = Integer.parseInt(scanner.nextLine());
         }
 
         String line;
         while (!("party over".equals(line = scanner.nextLine()))) {
-            String[] tokens = line.split("\\s+");
-            int pattern =
+            int[] cmds = Arrays.stream(line.split("\\s+")).mapToInt(Integer::parseInt).toArray();
+
+            switch (cmds[0]) {
+                case -1:
+                    flipBitAtPosition(tokens, cmds[1]);
+                    break;
+                case 0:
+                    setBitAtPositionToBeZero(tokens, cmds[1]);
+                    break;
+                case 1:
+                    setBitAtPositionToBeOne(tokens, cmds[1]);
+                    break;
+            }
+        }
+
+        for(int number : tokens) {
+            System.out.println(number);
+        }
+    }
+
+    private static void flipBitAtPosition(int[] arr, int position) {
+        for (int i = 0; i < arr.length; i++) {
+            int currNumber = arr[i];
+            int mask = 1 << position;
+            arr[i] = currNumber ^ mask;
+        }
+    }
+
+    private static void setBitAtPositionToBeZero(int arr[], int position) {
+        for (int i = 0; i < arr.length; i++) {
+            int currNumber = arr[i];
+            int mask = ~(1 << position);
+            arr[i] = currNumber & mask;
+        }
+    }
+
+    private static void setBitAtPositionToBeOne(int arr[], int position) {
+        for (int i = 0; i < arr.length; i++) {
+            int currNumber = arr[i];
+            int mask = 1 << position;
+            arr[i] = currNumber | mask;
         }
     }
 }
