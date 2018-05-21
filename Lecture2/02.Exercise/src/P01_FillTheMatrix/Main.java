@@ -34,25 +34,20 @@ public class Main {
     private static void fillMatrixB(int[][] matrix) {
         int counter = 1;
 
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                if (j % 2 == 0) {
-                    matrix[j][i] = counter++;
-                    System.out.println("  Writing on position: " + i + "" + j + "number: " + (counter - 1));
-                } else {
-                    matrix[i][j] = counter++;
-                    System.out.println("  Writing on position: " + i + "" + j + "number: " + (counter - 1));
-                }
 
+        for (int i = 0; i < matrix.length; i++) {
+            if (i % 2 == 0) {
+                for (int j = 0; j < matrix[i].length; j++) {
+                    matrix[j][i] = counter++;
+                }
+            } else {
+                for (int j = matrix[i].length - 1; j >= 0; j--) {
+                    matrix[j][i] = counter++;
+                }
             }
+
         }
     }
-    /*
-    00  01  02  03
-    10  11  12  13
-    20  21  22  23
-    30  31  32  33
- */
 
     private static void printMatrix(int[][] matrix) {
         for (int[] ints : matrix) {
