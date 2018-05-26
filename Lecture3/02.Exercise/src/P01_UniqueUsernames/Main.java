@@ -7,7 +7,7 @@ import java.util.Set;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Set<String> usernames = new LinkedHashSet<>();
+        var usernames = new LinkedHashSet<String>();
 
         int userCount = Integer.parseInt(scanner.nextLine());
 

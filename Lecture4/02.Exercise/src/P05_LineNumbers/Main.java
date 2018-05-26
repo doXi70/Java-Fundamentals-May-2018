@@ -1,0 +1,7 @@
+package P05_LineNumbers;
+
+public class Main {
+    public static void main(String[] args) {
+
+    }
+}
