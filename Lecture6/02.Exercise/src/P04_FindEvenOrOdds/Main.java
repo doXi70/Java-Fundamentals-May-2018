@@ -16,7 +16,7 @@ public class Main {
 
         String type = reader.readLine();
 
-        for (int i = indexes[0]; i < indexes[1]; i++) {
+        for (int i = indexes[0]; i <= indexes[1]; i++) {
             findAllEvenOrOdd(type, check, i);
         }
 
