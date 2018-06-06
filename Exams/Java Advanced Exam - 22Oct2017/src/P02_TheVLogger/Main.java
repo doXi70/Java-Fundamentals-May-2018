@@ -1,102 +1,99 @@
-//package P02_TheVLogger;
-//
-//import java.io.BufferedReader;
-//import java.io.IOException;
-//import java.io.InputStreamReader;
-//import java.util.*;
-//import java.util.stream.Collectors;
-//
-//public class Main {
-//    public static void main(String[] args) throws IOException {
-//        var reader = new BufferedReader(new InputStreamReader(System.in));
-//        Map<String, Map<String, Integer>> vlogger = new LinkedHashMap<>();
-//
-//        String line;
-//        while (!"Statistics".equals(line = reader.readLine())) {
-//            String[] tokens = line.split(" ");
-//            String username = tokens[0];
-//            String cmd = tokens[1];
-//
-//            switch (cmd) {
-//                case "joined":
-//                    addUser(vlogger, username);
-//                    break;
-//                case "followed":
-//                    String followerName = tokens[2];
-////                    followVlogger(vlogger, username, followerName);
-//                    break;
-//                default:
-//                    // it should never be thrown if program works correctly.
-//                    // very useful for test's for edge cases in judge tho.
-//                    throw new UnsupportedOperationException();
-//            }
-//        }
-//
-////        LinkedHashMap<String, List<String>> sortedVlogger = vlogger.entrySet()
-////                .stream().sorted((v1, v2) -> {
-////                    int followersCountOfFirstVlogger = v1.getValue().size();
-////                    int followersCountOfSecondVlogger = v2.getValue().size();
-////
-//////                    return Integer.compare(followersCountOfSecondVlogger, followersCountOfFirstVlogger);
-//////                })
-////                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
-//
-////        System.out.println(String.format("The V-Logger has a total of %d vloggers in its logs.", vlogger.size()));
-////        printVloggers(sortedVlogger);
-//    }
-//
-//    private static void printVloggers(LinkedHashMap<String, List<String>> sortedVlogger, Map<String, Integer> follows) {
-//        int counter = 1;
-//        for (Map.Entry<String, List<String>> entry : sortedVlogger.entrySet()) {
-//            String vloggerName = entry.getKey();
-//            int countOfFollows = follows.get(vloggerName);
-//
-//            System.out.println(String.format("%d. %s : %d followers, %d following",
-//                    counter, vloggerName, entry.getValue().size(), countOfFollows));
-//
-//            if (counter == 1) {
-//                List<String> followers = entry.getValue();
-//                Collections.sort(followers);
-//                for (String follower : followers) {
-//                    System.out.println(String.format("*  %s", follower));
-//                }
-//            }
-//
-//            counter++;
-//        }
-//    }
-//
-//    private static void followVlogger(Map<String, Map<String, Integer>> vlogger,
-//                                      String username,
-//                                      String followerName,
-//                                      Map<String, Integer> follows) {
-//
-//        // User can't follow him self.
-//        if (followerName.equals(username)) {
-//            return;
-//        }
-//
-//        // Make sure that the vlogger contains both the user, and his follower.
-//        if (vlogger.containsKey(username) && vlogger.containsKey(followerName)) {
-//
-//            //  Add new follower to that user.
-//            for (Map.Entry<String, List<String>> entry : vlogger.entrySet()) {
-//                // search for the follower and make sure that he DOESN'T have the user already following him.
-//                if (entry.getKey().equals(followerName) && !entry.getValue().contains(username)) {
-//                    // adding follower in the vlogger
-//                    List<String> followers = entry.getValue();
-//                    followers.add(username);
-//                    vlogger.put(followerName, followers);
-//
-//                    // adding to this follower +1 more follower
-//                    int oldFollowersCount = follows.get(username);
-//                    follows.put(username, ++oldFollowersCount);
-//                }
-//            }
-//        }
-//    }
-//
-//    private static void addUser(Map<String, Map<String, Integer>> vlogger, String username) {
-//        vlogger.putIfAbsent(username, new LinkedHashMap<>());
-//    }
-//}
+package P02_TheVLogger;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+    private static int counter = 1;
+
+    public static void main(String[] args) throws IOException {
+        var reader = new BufferedReader(new InputStreamReader(System.in));
+        Map<String, List<String>> teqKoitoGoSledvat = new LinkedHashMap<>();
+        Map<String, List<String>> teqKoitoTOIsledva = new LinkedHashMap<>();
+
+        String line;
+        while (!"Statistics".equals(line = reader.readLine())) {
+            String[] tokens = line.split(" ");
+            String username = tokens[0];
+            String cmd = tokens[1];
+
+            switch (cmd) {
+                case "joined":
+                    addUser(teqKoitoGoSledvat, username, teqKoitoTOIsledva);
+                    break;
+                case "followed":
+                    String followerName = tokens[2];
+                    followVlogger(teqKoitoGoSledvat, username, followerName, teqKoitoTOIsledva);
+                    break;
+                default:
+                    // it should never be thrown if program works correctly.
+                    // very useful for test's for edge cases in judge tho.
+                    throw new UnsupportedOperationException();
+            }
+        }
+
+        /*
+            Ako iskame da stravnim stringove
+
+            str1.compareTo(str2) - narastvasht - asc
+            str2.compareTo(str1) - namalqvasht - desc
+
+         */
+
+        System.out.printf("The V-Logger has a total of %d vloggers in its logs.%n", teqKoitoGoSledvat.size());
+
+        Comparator<Map.Entry<String, List<String>>> compareByFollowing =
+                (u1, u2) -> Integer.compare(u2.getValue().size(), u1.getValue().size());
+
+
+        teqKoitoGoSledvat.entrySet().stream()
+                .sorted((s1, s2) -> Integer.compare(s2.getValue().size(), s1.getValue().size()))
+                .forEach(x -> {
+                    String name = x.getKey();
+                    List<String> following = x.getValue();
+
+                    int size = teqKoitoTOIsledva.get(name).size();
+
+                    System.out.printf("%d. %s : %d followers, %d following%n",
+                            counter, name, x.getValue().size(), size);
+
+                    following.sort(String::compareTo);
+                    if (counter == 1 && x.getValue().size() != 0) {
+                        for (String s : following) {
+                            System.out.println("* " + s);
+                        }
+                    }
+
+                    counter++;
+                });
+
+    }
+
+    private static void followVlogger(Map<String, List<String>> teqKoitoGoSledvat, String username,
+                                      String followerName, Map<String, List<String>> teqKoitoTOIsledva) {
+
+        if (username.equals(followerName)) {
+            return;
+        }
+
+        if()
+
+        if (!teqKoitoGoSledvat.get(followerName).contains(username)) {
+            List<String> listUserFollows = teqKoitoGoSledvat.get(followerName);
+            listUserFollows.add(username);
+
+            List<String> listUserFollower = teqKoitoTOIsledva.get(username);
+            listUserFollower.add(followerName);
+        }
+
+    }
+
+    private static void addUser(Map<String, List<String>> vlogger, String username, Map<String, List<String>> following) {
+        vlogger.putIfAbsent(username, new ArrayList<>());
+        following.putIfAbsent(username, new ArrayList<>());
+    }
+
+
+}

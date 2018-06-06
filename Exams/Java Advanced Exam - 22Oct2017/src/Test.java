@@ -1,46 +1,63 @@
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Test {
-    public static void main(String[] args) {
-        Map<String, Map<String, Integer>> testMap = new HashMap<>();
+    public static void main(String[] args) throws IOException {
 
-        Map<String, Integer> insideMap = new HashMap<>();
-        Map<String, Integer> insideMap2 = new HashMap<>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        String username = "Denis Ivanov";
+        String follower1 = "Martin Stoqnov";
+        String follower2 = "Anni Kristova";
+        String follower3 = "New Value";
 
 
-        insideMap.put("test", 2);
-        insideMap.put("asd", 4);
-        insideMap.put("asz", 1);
-        insideMap.put("zxczxcxzc", 6);
+        Map<String, List<String>> followers = new LinkedHashMap<>();
+        Map<String, List<String>> following = new LinkedHashMap<>();
 
-        insideMap2.put("adv", 2);
-        insideMap2.put("ff", 3);
-        insideMap2.put("vvvv", 1);
+        int counter = 2;
+        while (counter-- != 0) {
 
-        testMap.put("Pesho", insideMap);
-        testMap.put("Gosho", insideMap2);
+            if (!followers.containsKey(username)) {
+                followers.put(username, new ArrayList<>());
+                following.put(username, new ArrayList<>());
 
-        System.out.println(testMap);
+                followers.put(follower1, new ArrayList<>());
+                followers.put(follower2, new ArrayList<>());
 
-        testMap.entrySet()
+                following.put(follower1, new ArrayList<>());
+                following.put(follower2, new ArrayList<>());
+            } else {
+                List<String> as = followers.get(username);
+                as.add(follower1);
+                as.add(follower2);
+
+                List<String> bb = followers.get(follower2);
+                bb.add(follower3);
+
+                List<String> putFollower = following.get(follower1);
+                putFollower.add(username);
+
+                List<String> anniFollower = following.get(follower2);
+                anniFollower.add(follower3);
+
+                following.put(follower1, putFollower);
+                following.put(follower2, anniFollower);
+            }
+
+        }
+
+        List<Map.Entry<String, List<String>>> collect = followers.entrySet()
                 .stream()
-                .sorted((m1, m2) -> {
-                    int valueSize = m1.getValue().size();
-                    int value2Size = m2.getValue().size();
+                .sorted((f1, f2) -> Integer.compare(f2.getValue().size(), f1.getValue().size()))
+                .collect(Collectors.toList());
 
-                    return Integer.compare(value2Size, valueSize);
-                })
-                .forEach(m -> {
-                    m.getValue()
-                            .values()
-                            .stream()
-                            .sorted((v1, v2) -> Integer.compare(v2, v1))
-                            .forEach(player -> {
-
-                            });
-
-                });
-
+        System.out.println(collect);
     }
 }
