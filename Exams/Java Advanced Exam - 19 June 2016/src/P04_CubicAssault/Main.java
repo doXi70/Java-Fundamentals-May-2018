@@ -4,16 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
         Map<String, Map<String, Long>> regionData = new TreeMap<>();
-
-        // endData before last sorting for the print
-        Map<String, Map<String, Long>> endData = new LinkedHashMap<>();
 
         String line;
         while (!"Count em all".equals(line = reader.readLine())) {
@@ -26,58 +22,26 @@ public class Main {
             addRegionData(regionData, regionName, meteorType, amount);
         }
 
-        endData = regionData;
+        regionData.entrySet().stream()
+                .sorted(Comparator.comparing((Map.Entry<String, Map<String, Long>> region) -> region.getValue().get("Black"), Comparator.reverseOrder())
+                        .thenComparing((Map.Entry<String, Map<String, Long>> region) -> region.getKey().length())
+                        .thenComparing(Map.Entry::getKey))
+                .forEach(element -> {
+                    StringBuilder sb = new StringBuilder(element.getKey()).append(System.lineSeparator());
 
-        Comparator<Map.Entry<String, Map<String, Long>>> byBlackAmountAndRegionName = (o1, o2) -> {
-            long meteor1Amount = o1.getValue().get("Black");
-            long meteor2Amount = o2.getValue().get("Black");
+                    element.getValue().entrySet().stream()
+                            .sorted(Comparator.comparing((Function<Map.Entry<String, Long>, Long>) Map.Entry::getValue, Comparator.reverseOrder())
+                                    .thenComparing(Map.Entry::getKey))
+                            .forEach(meteor -> {
+                                sb.append(String.format("-> %s : %d", meteor.getKey(), meteor.getValue())).append(System.lineSeparator());
+                            });
 
-            if (meteor1Amount == meteor2Amount) {
-                int region1NameLen = o1.getKey().length();
-                int region2NameLen = o2.getKey().length();
+                    System.out.print(sb);
+                });
 
-                return Integer.compare(region1NameLen, region2NameLen);
-            }
 
-            return Long.compare(meteor2Amount, meteor1Amount);
-        };
-
-        Comparator<Map.Entry<String, Long>> byAmountOrName = (x1, x2) -> {
-            long x1Value = x1.getValue();
-            long x2Value = x2.getValue();
-
-            if (x1Value != x2Value) {
-                return Long.compare(x2Value, x1Value);
-            }
-
-            String x1Name = x1.getKey();
-            String x2Name = x2.getKey();
-
-            return x1Name.compareTo(x2Name);
-        };
-
-        LinkedHashMap<String, Map<String, Long>> sortedByFirstComp = endData.entrySet().stream()
-                .sorted(byBlackAmountAndRegionName)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
-
-        for (Map.Entry<String, Map<String, Long>> entry : sortedByFirstComp.entrySet()) {
-            String regionName = entry.getKey();
-            Map<String, Long> meteorData = entry.getValue();
-
-            LinkedHashMap<String, Long> sortedMeteorDataBySecondComp = meteorData.entrySet().stream()
-                    .sorted(byAmountOrName)
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
-
-            System.out.println(regionName);
-            for (Map.Entry<String, Long> meteorInfo : sortedMeteorDataBySecondComp.entrySet()) {
-                String meteorName = meteorInfo.getKey();
-                Long meteorAmount = meteorInfo.getValue();
-
-                System.out.printf("-> %s : %d%n", meteorName, meteorAmount);
-            }
-
-        }
     }
+
 
     private static void addRegionData(Map<String, Map<String, Long>> regionData, String regionName,
                                       String meteorType, Long amount) {
@@ -108,7 +72,8 @@ public class Main {
         long redAmount = meteorData.get("Red");
         long blackAmount = meteorData.get("Black");
 
-        while (greenAmount >= 1000000) {            redAmount++;
+        while (greenAmount >= 1000000) {
+            redAmount++;
             greenAmount -= 1000000;
         }
 
